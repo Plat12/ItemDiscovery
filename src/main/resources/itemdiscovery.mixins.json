@@ -4,6 +4,7 @@
   "package": "net.plat12.itemdiscovery.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "item.ItemMixin"
   ],
   "client": [
   ],
