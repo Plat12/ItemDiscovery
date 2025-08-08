@@ -2,7 +2,6 @@ package net.plat12.itemdiscovery.util.savedata;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import net.plat12.itemdiscovery.ItemDiscovery;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ItemNamesSaveData extends SavedData {
 
@@ -97,6 +95,7 @@ public class ItemNamesSaveData extends SavedData {
 
     public void put(UUID uuid, Item item, String name) {
         this.playerItemNames.computeIfAbsent(uuid, k -> new HashMap<>()).put(item, name);
+        setDirty();
     }
 
     public void put(Player player, Item item, String name) {
@@ -131,7 +130,10 @@ public class ItemNamesSaveData extends SavedData {
             if (playerItems.isEmpty()) {
                 this.playerItemNames.remove(uuid);
             }
-            return removed != null;
+            if (removed != null) {
+                setDirty();
+                return true;
+            }
         }
         return false;
     }
@@ -141,7 +143,9 @@ public class ItemNamesSaveData extends SavedData {
     }
 
     public void removePlayer(UUID uuid) {
-        this.playerItemNames.remove(uuid);
+        if (this.playerItemNames.remove(uuid) != null) {
+            setDirty();
+        }
     }
 
     public void removePlayer(Player player) {
@@ -183,7 +187,10 @@ public class ItemNamesSaveData extends SavedData {
     }
 
     public void clear() {
-        this.playerItemNames.clear();
+        if (!this.playerItemNames.isEmpty()) {
+            this.playerItemNames.clear();
+            setDirty();
+        }
     }
 
     public boolean isEmpty() {
@@ -202,6 +209,7 @@ public class ItemNamesSaveData extends SavedData {
     public void putAll(UUID uuid, Map<Item, String> items) {
         if (items != null && !items.isEmpty()) {
             this.playerItemNames.computeIfAbsent(uuid, k -> new HashMap<>()).putAll(items);
+            setDirty();
         }
     }
 
@@ -209,22 +217,12 @@ public class ItemNamesSaveData extends SavedData {
         this.putAll(player.getUUID(), items);
     }
 
-    public Set<Item> findItemsWithName(String name) {
-        return this.playerItemNames.values().stream()
-                .flatMap(items -> items.entrySet().stream())
-                .filter(entry -> name.equals(entry.getValue()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+    public boolean containsName(UUID uuid, String name) {
+        return this.getPlayerItems(uuid).containsValue(name);
     }
 
-    public Map<UUID, Item> findPlayersWithItemName(String name) {
-        Map<UUID, Item> result = new HashMap<>();
-        this.playerItemNames.forEach((uuid, items) -> {
-            items.entrySet().stream()
-                    .filter(entry -> name.equals(entry.getValue()))
-                    .forEach(entry -> result.put(uuid, entry.getKey()));
-        });
-        return result;
+    public boolean containsName(Player player, String name) {
+        return this.containsName(player.getUUID(), name);
     }
 
     // Helper records for serialization
@@ -233,6 +231,5 @@ public class ItemNamesSaveData extends SavedData {
 
     private record PlayerItemNamesEntry(UUID playerId, Map<Item, String> itemNames) {
     }
-
 
 }

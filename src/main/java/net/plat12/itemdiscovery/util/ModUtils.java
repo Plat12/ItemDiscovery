@@ -2,7 +2,6 @@ package net.plat12.itemdiscovery.util;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.plat12.itemdiscovery.util.packet.ClientPayloadHandler;
@@ -11,7 +10,7 @@ import net.plat12.itemdiscovery.util.savedata.ItemNamesSaveData;
 public class ModUtils {
 
 
-    public static String fancyFormat(String string) {
+    public static String titleCase(String string) {
         if (string == null || string.isEmpty()) {
             return string;
         }
@@ -40,10 +39,16 @@ public class ModUtils {
     }
 
 
-    public static void nameItem(ServerLevel level, ServerPlayer player, Item item, String name) {
-        name = fancyFormat(name);
-        ItemNamesSaveData.getOrCreate(level).put(player, item, name);
+    public static boolean setItemName(ServerLevel level, ServerPlayer player, Item item, String name) {
+        if (name == null || name.isEmpty()) return false;
+        name = titleCase(name);
+
+        ItemNamesSaveData names = ItemNamesSaveData.getOrCreate(level);
+        if (names.containsName(player, name)) return false;
+
+        names.put(player, item, name);
         PacketDistributor.sendToPlayer(player, ClientPayloadHandler.ItemNameMapPacket.single(item, name));
+        return true;
     }
 
     public static void updateItemNames(ServerLevel level, ServerPlayer player) {

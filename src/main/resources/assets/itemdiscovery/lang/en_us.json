@@ -3,6 +3,10 @@
   "block.itemdiscovery.example_block": "Example Block",
   "item.itemdiscovery.example_item": "Example Item",
   "item.itemdiscovery.unknown_item": "Unknown Item",
-  "item.itemdiscovery.unknown_block": "Unknown Block"
+  "item.itemdiscovery.unknown_block": "Unknown Block",
+  "key.itemdiscovery.change_name": "Change Item Name",
+  "screen.itemdiscovery.name_item": "What would you like to call this item?",
+  "screen.itemdiscovery.name_block": "What would you like to call this block?",
+  "screen.itemdiscovery.name": "Name"
 
 }

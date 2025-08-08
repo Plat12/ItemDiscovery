@@ -2,7 +2,6 @@ package net.plat12.itemdiscovery.util.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -10,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.plat12.itemdiscovery.ItemDiscovery;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,6 @@ public class ClientPayloadHandler {
             ClientStorage.mergeMap(packet.map());
         });
     }
-
 
 
     public record ItemNameMapPacket(Map<Item, String> map) implements CustomPacketPayload {
@@ -48,11 +47,10 @@ public class ClientPayloadHandler {
         }
 
         @Override
-        public Type<? extends CustomPacketPayload> type() {
+        public @NotNull Type<? extends CustomPacketPayload> type() {
             return TYPE;
         }
     }
-
 
 
     public static class ClientStorage {
@@ -62,6 +60,7 @@ public class ClientPayloadHandler {
         public static Map<Item, String> getMap() {
             return itemNameMap;
         }
+
         public static void clearMap() {
             itemNameMap.clear();
         }
