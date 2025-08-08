@@ -90,7 +90,7 @@ public class ItemNamesSaveData extends SavedData {
     }
 
     public static ItemNamesSaveData getOrCreate(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(TYPE);
+        return level.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 
     public void put(UUID uuid, Item item, String name) {
