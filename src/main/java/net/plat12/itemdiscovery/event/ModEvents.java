@@ -14,7 +14,6 @@ import net.plat12.itemdiscovery.ItemDiscovery;
 import net.plat12.itemdiscovery.screen.NameItemScreen;
 import net.plat12.itemdiscovery.util.ModUtils;
 import net.plat12.itemdiscovery.util.packet.ClientPayloadHandler;
-import net.plat12.itemdiscovery.util.savedata.ItemNamesSaveData;
 
 @EventBusSubscriber
 public class ModEvents {
@@ -37,7 +36,7 @@ public class ModEvents {
         while (ItemDiscovery.NAME_CHANGE_KEY_MAPPING.get().consumeClick()) {
             Minecraft minecraft = Minecraft.getInstance();
             Player player = minecraft.player;
-            if (player != null) {
+            if (player != null && !player.hasInfiniteMaterials()) {
                 ItemStack mainHandItem = player.getMainHandItem();
                 ItemStack offHandItem = player.getOffhandItem();
                 Item heldItem = !mainHandItem.isEmpty() ? mainHandItem.getItem() :

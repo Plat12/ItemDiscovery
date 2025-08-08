@@ -20,7 +20,7 @@ public class ItemNamesSaveData extends SavedData {
             ItemDiscovery.MOD_ID + "_item_names",
             ctx -> new ItemNamesSaveData(),
             ctx -> {
-                // Define the entry codec for individual item name mappings
+
                 Codec<ItemNameEntry> itemEntryCodec = RecordCodecBuilder.create(instance ->
                         instance.group(
                                 BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemNameEntry::item),
@@ -28,7 +28,7 @@ public class ItemNamesSaveData extends SavedData {
                         ).apply(instance, ItemNameEntry::new)
                 );
 
-                // Define the player entry codec
+
                 Codec<PlayerItemNamesEntry> playerEntryCodec = RecordCodecBuilder.create(instance ->
                         instance.group(
                                 UUIDUtil.CODEC.fieldOf("playerId").forGetter(PlayerItemNamesEntry::playerId),
@@ -79,12 +79,12 @@ public class ItemNamesSaveData extends SavedData {
     );
     private final Map<UUID, Map<Item, String>> playerItemNames;
 
-    // Constructor for new instances
+
     private ItemNamesSaveData() {
         this(new HashMap<>());
     }
 
-    // Constructor for codec deserialization
+
     private ItemNamesSaveData(Map<UUID, Map<Item, String>> playerItemNames) {
         this.playerItemNames = new HashMap<>(playerItemNames);
     }
@@ -225,7 +225,7 @@ public class ItemNamesSaveData extends SavedData {
         return this.containsName(player.getUUID(), name);
     }
 
-    // Helper records for serialization
+    // helper records for serialization
     private record ItemNameEntry(Item item, String name) {
     }
 

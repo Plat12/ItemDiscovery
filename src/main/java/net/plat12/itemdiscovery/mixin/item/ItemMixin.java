@@ -2,9 +2,7 @@ package net.plat12.itemdiscovery.mixin.item;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +36,7 @@ public class ItemMixin {
         String name = ClientPayloadHandler.ClientStorage.getName(item);
         Component nameComponent;
         if (name != null) {
-             nameComponent = Component.literal(name);
+            nameComponent = Component.literal(name);
         } else {
             String key = item instanceof BlockItem ? BLOCK_KEY : ITEM_KEY;
             nameComponent = Component.translatable(BASE_KEY + key);

@@ -39,16 +39,12 @@ public class ModUtils {
     }
 
 
-    public static boolean setItemName(ServerLevel level, ServerPlayer player, Item item, String name) {
-        if (name == null || name.isEmpty()) return false;
+    public static void setItemName(ServerLevel level, ServerPlayer player, Item item, String name) {
+        if (name == null || name.isEmpty()) return;
         name = titleCase(name);
 
-        ItemNamesSaveData names = ItemNamesSaveData.getOrCreate(level);
-        if (names.containsName(player, name)) return false;
-
-        names.put(player, item, name);
+        ItemNamesSaveData.getOrCreate(level).put(player, item, name);
         PacketDistributor.sendToPlayer(player, ClientPayloadHandler.ItemNameMapPacket.single(item, name));
-        return true;
     }
 
     public static void updateItemNames(ServerLevel level, ServerPlayer player) {
