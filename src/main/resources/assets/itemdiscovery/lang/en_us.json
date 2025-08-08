@@ -1,7 +1,4 @@
 {
-  "itemGroup.itemdiscovery": "Example Mod Tab",
-  "block.itemdiscovery.example_block": "Example Block",
-  "item.itemdiscovery.example_item": "Example Item",
   "item.itemdiscovery.unknown_item": "Unknown Item",
   "item.itemdiscovery.unknown_block": "Unknown Block",
   "key.itemdiscovery.change_name": "Change Item Name",
