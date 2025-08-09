@@ -7,6 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.plat12.itemdiscovery.ItemDiscovery;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +52,30 @@ public class ClientPayloadHandler {
             return TYPE;
         }
     }
+
+
+    public record EnchantmentNameMapPacket(Map<Enchantment, String> map) implements CustomPacketPayload {
+        public static final Type<EnchantmentNameMapPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath
+                (ItemDiscovery.MOD_ID, "enchantment_name_map_packet"));
+
+//        public static final StreamCodec<ByteBuf, EnchantmentNameMapPacket> STREAM_CODEC = StreamCodec.composite(
+//                ByteBufCodecs.map(
+//                        HashMap::new,
+//                        Enchantment.STREAM_CODEC,     // Key: Enchantment
+//                        ByteBufCodecs.STRING_UTF8     // Value: String
+//                ),
+//                EnchantmentNameMapPacket::map,
+//                EnchantmentNameMapPacket::new
+//        );
+
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+
+
 
 
     public static class ClientStorage {

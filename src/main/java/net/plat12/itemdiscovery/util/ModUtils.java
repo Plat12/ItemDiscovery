@@ -51,7 +51,7 @@ public class ModUtils {
         PacketDistributor.sendToPlayer(player,
                 new ClientPayloadHandler.ItemNameMapPacket(
                         ItemNamesSaveData.getOrCreate(level)
-                                .getPlayerItems(player)));
+                                .getPlayerNames(player)));
     }
 
 
