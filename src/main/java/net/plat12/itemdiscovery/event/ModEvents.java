@@ -28,7 +28,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void clearPlayerNamesOnQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-        ClientPayloadHandler.ClientStorage.clearMaps();
+        ClientPayloadHandler.ClientStorage.clear();
     }
 
     @SubscribeEvent
