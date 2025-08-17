@@ -2,9 +2,12 @@ package net.plat12.itemdiscovery.util;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.plat12.itemdiscovery.util.packet.ClientPayloadHandler;
+import net.plat12.itemdiscovery.util.packet.client.EffectNameMapPacket;
+import net.plat12.itemdiscovery.util.packet.client.ItemNameMapPacket;
+import net.plat12.itemdiscovery.util.savedata.EffectNamesSaveData;
 import net.plat12.itemdiscovery.util.savedata.ItemNamesSaveData;
 
 public class ModUtils {
@@ -44,14 +47,35 @@ public class ModUtils {
         name = titleCase(name);
 
         ItemNamesSaveData.getOrCreate(level).put(player, item, name);
-        PacketDistributor.sendToPlayer(player, ClientPayloadHandler.ItemNameMapPacket.single(item, name));
+        PacketDistributor.sendToPlayer(player, ItemNameMapPacket.single(item, name));
+    }
+
+    public static void setEffectName(ServerLevel level, ServerPlayer player, MobEffect effect, String name) {
+        if (name == null || name.isEmpty()) return;
+        name = titleCase(name);
+
+        EffectNamesSaveData.getOrCreate(level).put(player, effect, name);
+        PacketDistributor.sendToPlayer(player, EffectNameMapPacket.single(effect, name));
     }
 
     public static void updateItemNames(ServerLevel level, ServerPlayer player) {
         PacketDistributor.sendToPlayer(player,
-                new ClientPayloadHandler.ItemNameMapPacket(
+                new ItemNameMapPacket(
                         ItemNamesSaveData.getOrCreate(level)
                                 .getPlayerNames(player)));
+    }
+
+    private static void updateEffectNames(ServerLevel level, ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player,
+                new EffectNameMapPacket(
+                        EffectNamesSaveData.getOrCreate(level)
+                                .getPlayerNames(player)));
+    }
+
+
+    public static void updateNames(ServerLevel level, ServerPlayer player) {
+        updateItemNames(level, player);
+        updateEffectNames(level, player);
     }
 
 

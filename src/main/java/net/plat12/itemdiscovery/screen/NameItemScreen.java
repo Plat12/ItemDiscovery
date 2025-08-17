@@ -10,7 +10,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.plat12.itemdiscovery.util.packet.ServerPayloadHandler;
+import net.plat12.itemdiscovery.util.packet.server.ItemNamePacket;
 import org.lwjgl.glfw.GLFW;
 
 
@@ -58,7 +58,7 @@ public class NameItemScreen extends Screen {
     private void onConfirm(Button button) {
         if (!button.isActive()) return;
         ClientPacketDistributor.sendToServer(
-                new ServerPayloadHandler.ItemNamePacket(this.item, this.itemName));
+                new ItemNamePacket(this.item, this.itemName));
         this.onClose();
     }
 

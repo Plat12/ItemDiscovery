@@ -5,8 +5,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,12 +17,14 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.jarjar.nio.util.Lazy;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.plat12.itemdiscovery.util.packet.ClientPayloadHandler;
-import net.plat12.itemdiscovery.util.packet.ServerPayloadHandler;
+import net.plat12.itemdiscovery.util.packet.client.ClientPayloadHandler;
+import net.plat12.itemdiscovery.util.packet.client.EffectNameMapPacket;
+import net.plat12.itemdiscovery.util.packet.client.ItemNameMapPacket;
+import net.plat12.itemdiscovery.util.packet.server.EffectNamePacket;
+import net.plat12.itemdiscovery.util.packet.server.ItemNamePacket;
+import net.plat12.itemdiscovery.util.packet.server.ServerPayloadHandler;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -33,6 +33,12 @@ import org.slf4j.Logger;
 public class ItemDiscovery {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "itemdiscovery";
+    public static final Lazy<KeyMapping> NAME_CHANGE_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
+            "key.itemdiscovery.change_name",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_K,
+            "key.categories.misc"
+    ));
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -62,21 +68,12 @@ public class ItemDiscovery {
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
-
-
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
     }
-
-    public static final Lazy<KeyMapping> NAME_CHANGE_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
-            "key.itemdiscovery.change_name",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_K,
-            "key.categories.misc"
-    ));
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber
@@ -89,7 +86,6 @@ public class ItemDiscovery {
         }
 
 
-
         @SubscribeEvent
         public static void registerBindings(RegisterKeyMappingsEvent event) {
             event.register(NAME_CHANGE_KEY_MAPPING.get());
@@ -98,18 +94,27 @@ public class ItemDiscovery {
         @SubscribeEvent
         public static void registerPayloads(RegisterPayloadHandlersEvent event) {
             event.registrar("1")
-                    .playToClient(ClientPayloadHandler.ItemNameMapPacket.TYPE,
-                            ClientPayloadHandler.ItemNameMapPacket.STREAM_CODEC,
+                    .playToClient(ItemNameMapPacket.TYPE,
+                            ItemNameMapPacket.STREAM_CODEC,
                             ClientPayloadHandler::handleItemNameMap);
 
+
             event.registrar("2")
-                    .playToServer(ServerPayloadHandler.ItemNamePacket.TYPE,
-                            ServerPayloadHandler.ItemNamePacket.STREAM_CODEC,
+                    .playToServer(ItemNamePacket.TYPE,
+                            ItemNamePacket.STREAM_CODEC,
                             ServerPayloadHandler::handleItemName);
 
+            event.registrar("3")
+                    .playToClient(EffectNameMapPacket.TYPE,
+                            EffectNameMapPacket.STREAM_CODEC,
+                            ClientPayloadHandler::handleEffectNameMap);
+
+            event.registrar("4")
+                    .playToServer(EffectNamePacket.TYPE,
+                            EffectNamePacket.STREAM_CODEC,
+                            ServerPayloadHandler::handleEffectName);
+
         }
-
-
 
 
     }

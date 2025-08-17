@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.plat12.itemdiscovery.screen.NameItemScreen;
-import net.plat12.itemdiscovery.util.packet.ClientPayloadHandler;
+import net.plat12.itemdiscovery.util.packet.client.ClientPayloadHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

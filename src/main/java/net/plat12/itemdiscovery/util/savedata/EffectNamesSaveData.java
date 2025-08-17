@@ -1,11 +1,9 @@
 package net.plat12.itemdiscovery.util.savedata;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.Map;

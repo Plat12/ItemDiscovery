@@ -13,22 +13,22 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.plat12.itemdiscovery.ItemDiscovery;
 import net.plat12.itemdiscovery.screen.NameItemScreen;
 import net.plat12.itemdiscovery.util.ModUtils;
-import net.plat12.itemdiscovery.util.packet.ClientPayloadHandler;
+import net.plat12.itemdiscovery.util.packet.client.ClientPayloadHandler;
 
 @EventBusSubscriber
 public class ModEvents {
 
     @SubscribeEvent
-    public static void updatePlayerItemNamesOnJoin(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void updatePlayerNamesOnJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player
                 && player.level() instanceof ServerLevel level) {
-            ModUtils.updateItemNames(level, player);
+            ModUtils.updateNames(level, player);
         }
     }
 
     @SubscribeEvent
-    public static void clearPlayerItemNamesOnQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-        ClientPayloadHandler.ClientStorage.clearMap();
+    public static void clearPlayerNamesOnQuit(PlayerEvent.PlayerLoggedOutEvent event) {
+        ClientPayloadHandler.ClientStorage.clearMaps();
     }
 
     @SubscribeEvent
