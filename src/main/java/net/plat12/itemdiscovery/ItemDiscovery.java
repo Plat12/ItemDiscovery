@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 public class ItemDiscovery {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "itemdiscovery";
+    public static final String PACKET_PROTOCOL = MOD_ID + ".protocol";
     public static final Lazy<KeyMapping> NAME_CHANGE_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
             "key.itemdiscovery.change_name",
             InputConstants.Type.KEYSYM,
@@ -93,23 +94,22 @@ public class ItemDiscovery {
 
         @SubscribeEvent
         public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-            event.registrar("1")
+            event.registrar(PACKET_PROTOCOL)
                     .playToClient(ItemNameMapPacket.TYPE,
                             ItemNameMapPacket.STREAM_CODEC,
                             ClientPayloadHandler::handleItemNameMap);
 
-
-            event.registrar("2")
+            event.registrar(PACKET_PROTOCOL)
                     .playToServer(ItemNamePacket.TYPE,
                             ItemNamePacket.STREAM_CODEC,
                             ServerPayloadHandler::handleItemName);
 
-            event.registrar("3")
+            event.registrar(PACKET_PROTOCOL)
                     .playToClient(EffectNameMapPacket.TYPE,
                             EffectNameMapPacket.STREAM_CODEC,
                             ClientPayloadHandler::handleEffectNameMap);
 
-            event.registrar("4")
+            event.registrar(PACKET_PROTOCOL)
                     .playToServer(EffectNamePacket.TYPE,
                             EffectNamePacket.STREAM_CODEC,
                             ServerPayloadHandler::handleEffectName);
