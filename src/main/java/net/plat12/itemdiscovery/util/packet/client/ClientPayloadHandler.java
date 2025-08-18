@@ -1,10 +1,9 @@
 package net.plat12.itemdiscovery.util.packet.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.LanguageManager;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.plat12.itemdiscovery.util.ModUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class ClientPayloadHandler {
                 TRANSLATION_OVERRIDES.put(item.getDescriptionId(), name);
             }));
             // Reload language asynchronously to apply changes immediately
-            reloadLanguageAsync();
+            ModUtils.reloadLanguageAsync();
         }
 
         public static void mergeEffectMap(Map<MobEffect, String> map) {
@@ -45,31 +44,8 @@ public class ClientPayloadHandler {
                 TRANSLATION_OVERRIDES.put(effect.getDescriptionId(), name);
             }));
             // Reload language asynchronously to apply changes immediately
-            reloadLanguageAsync();
+            ModUtils.reloadLanguageAsync();
         }
 
-        /**
-         * Reloads the current language asynchronously to pick up translation changes
-         */
-        private static void reloadLanguageAsync() {
-            Minecraft mc = Minecraft.getInstance();
-            mc.execute(() -> {
-                LanguageManager languageManager = mc.getLanguageManager();
-
-                // This is the method that gets called during resource reloads
-                // It only reloads language data, not all resources
-                languageManager.onResourceManagerReload(mc.getResourceManager());
-
-                // Force UI updates without full resource reload
-                if (mc.screen != null) {
-                    mc.screen.init(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
-                }
-
-                // Update inventories to refresh item names
-                if (mc.player != null) {
-                    mc.player.inventoryMenu.broadcastChanges();
-                }
-            });
-        }
     }
 }

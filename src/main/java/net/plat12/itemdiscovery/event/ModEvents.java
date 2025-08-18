@@ -15,6 +15,8 @@ import net.plat12.itemdiscovery.screen.NameItemScreen;
 import net.plat12.itemdiscovery.util.ModUtils;
 import net.plat12.itemdiscovery.util.packet.client.ClientPayloadHandler;
 
+import static net.plat12.itemdiscovery.util.ModUtils.shouldDisplayCustomNames;
+
 @EventBusSubscriber
 public class ModEvents {
 
@@ -34,9 +36,9 @@ public class ModEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         while (ItemDiscovery.NAME_CHANGE_KEY_MAPPING.get().consumeClick()) {
-            Minecraft minecraft = Minecraft.getInstance();
-            Player player = minecraft.player;
-            if (player != null && !player.hasInfiniteMaterials()) {
+            if (shouldDisplayCustomNames()) {
+                Minecraft minecraft = Minecraft.getInstance();
+                Player player = minecraft.player;
                 ItemStack mainHandItem = player.getMainHandItem();
                 ItemStack offHandItem = player.getOffhandItem();
                 Item heldItem = !mainHandItem.isEmpty() ? mainHandItem.getItem() :
@@ -48,4 +50,11 @@ public class ModEvents {
 
         }
     }
+
+    @SubscribeEvent
+    public static void reloadLangOnGameModeChange(PlayerEvent.PlayerChangeGameModeEvent event) {
+        ModUtils.reloadLanguageAsync();
+    }
+
+
 }

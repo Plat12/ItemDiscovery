@@ -1,8 +1,11 @@
 package net.plat12.itemdiscovery.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.LanguageManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.plat12.itemdiscovery.util.packet.client.EffectNameMapPacket;
@@ -78,5 +81,29 @@ public class ModUtils {
         updateEffectNames(level, player);
     }
 
+    public static boolean shouldDisplayCustomNames() {
+        Player player = Minecraft.getInstance().player;
+        return player != null && !(player.isCreative() || player.isSpectator());
+    }
 
+
+    /**
+     * Reloads the current language asynchronously to pick up translation changes
+     */
+    public static void reloadLanguageAsync() {
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> {
+            LanguageManager languageManager = mc.getLanguageManager();
+
+            languageManager.onResourceManagerReload(mc.getResourceManager());
+
+            if (mc.screen != null) {
+                mc.screen.init(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
+            }
+
+            if (mc.player != null) {
+                mc.player.inventoryMenu.broadcastChanges();
+            }
+        });
+    }
 }

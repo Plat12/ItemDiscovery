@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
+import static net.plat12.itemdiscovery.util.ModUtils.shouldDisplayCustomNames;
+
 @Mixin(ClientLanguage.class)
 public class ClientLanguageMixin {
 
@@ -39,26 +41,24 @@ public class ClientLanguageMixin {
     @Inject(method = "getOrDefault(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
             at = @At("HEAD"), cancellable = true)
     private void interceptGetOrDefault(String key, String defaultValue, CallbackInfoReturnable<String> cir) {
+        if (!shouldDisplayCustomNames()) return;
         if (ClientPayloadHandler.ClientStorage.TRANSLATION_OVERRIDES.containsKey(key)) {
             cir.setReturnValue(ClientPayloadHandler.ClientStorage.TRANSLATION_OVERRIDES.get(key));
             return;
         }
 
         if (key.startsWith("item.") || key.startsWith("block.")) {
-            Player player = Minecraft.getInstance().player;
+            Item item = getItemFromTranslationKey(key);
+            if (item != null) {
+                String unknownKey = item instanceof BlockItem ?
+                        BASE_KEY + BLOCK_KEY :
+                        BASE_KEY + ITEM_KEY;
 
-            if (player == null || !player.hasInfiniteMaterials()) {
-                Item item = getItemFromTranslationKey(key);
-                if (item != null) {
-                    String unknownKey = item instanceof BlockItem ?
-                            BASE_KEY + BLOCK_KEY :
-                            BASE_KEY + ITEM_KEY;
-
-                    String unknownTranslation = storage.getOrDefault(unknownKey,
-                            item instanceof BlockItem ? "Unknown Block" : "Unknown Item");
-                    cir.setReturnValue(unknownTranslation);
-                }
+                String unknownTranslation = storage.getOrDefault(unknownKey,
+                        item instanceof BlockItem ? "Unknown Block" : "Unknown Item");
+                cir.setReturnValue(unknownTranslation);
             }
+
         }
     }
 
